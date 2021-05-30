@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using WebScraper.Scraper.Models;
 
 namespace WebScraper.Scraper
@@ -16,6 +18,7 @@ namespace WebScraper.Scraper
 
         public Models.Scraper GetData()
         {
+            Logger.WriteLine($"Starting to fetch url {_scraper.Url}");
             var request = (HttpWebRequest)WebRequest.Create(_scraper.Url);
             request.AutomaticDecompression = DecompressionMethods.GZip;
             var response = (HttpWebResponse)request.GetResponse();
@@ -28,7 +31,7 @@ namespace WebScraper.Scraper
                 return null;
 
             html = html[html.IndexOf(_scraper.Scope.From, StringComparison.Ordinal)..html.LastIndexOf(_scraper.Scope.To, StringComparison.Ordinal)];
-
+            Logger.WriteLine($"Done to fetch url {_scraper.Url}");
             foreach (var scraperGroup in _scraper.Groups)
             {
                 switch (scraperGroup.GroupItemType)
@@ -61,10 +64,12 @@ namespace WebScraper.Scraper
                                 case GroupItemType.Single:
                                     var eSFrom = result.IndexOf(scraperGroup.Extraction.From, StringComparison.Ordinal) + scraperGroup.Extraction.From.Length;
                                     var eSTo = result.Split(scraperGroup.Extraction.From)[1].IndexOf(scraperGroup.Extraction.To, StringComparison.Ordinal) + eSFrom;
+                                    Logger.WriteLine($"Extracted the following {result[eSFrom..eSTo]}");
                                     scraperGroup.Extraction?.Result.Add(result[eSFrom..eSTo]);
                                     break;
                                 case GroupItemType.Loop:
                                     var splitter = result.Split(scraperGroup.Extraction.From);
+                                    var extractionResult = new string[splitter.Length - 1];
                                     for (var j = 1; j < splitter.Length; j++)
                                     {
                                         var extractionSplit = scraperGroup.Extraction.From + splitter[j];
@@ -74,8 +79,10 @@ namespace WebScraper.Scraper
                                             continue;
                                         var eLFrom = extractionSplit.IndexOf(scraperGroup.Extraction.From, StringComparison.Ordinal) + scraperGroup.Extraction.From.Length;
                                         var eLTo = extractionSplit.Split(scraperGroup.Extraction.From)[1].IndexOf(scraperGroup.Extraction.To, StringComparison.Ordinal) + eLFrom;
-                                        scraperGroup.Extraction?.Result.Add(extractionSplit[eLFrom..eLTo]);
+                                        extractionResult[j-1] = extractionSplit[eLFrom..eLTo];
                                     }
+                                    Logger.WriteLine($"Extracted the following {JsonSerializer.Serialize(extractionResult)}");
+                                    scraperGroup.Extraction?.Result.Add(JsonSerializer.Serialize(extractionResult));
                                     break;
                                 default:
                                     throw new ArgumentOutOfRangeException();

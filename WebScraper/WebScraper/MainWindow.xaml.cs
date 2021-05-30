@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using WebScraper.Scraper;
 using WebScraper.Scraper.Models;
 using GroupItem = WebScraper.Scraper.Models.GroupItem;
 
@@ -16,7 +17,33 @@ namespace WebScraper
         public MainWindow()
         {
             InitializeComponent();
+            Logger.WriteEvent += WriteEventHandler;
+            Logger.WriteLine("Logger initialized");
         }
+
+        #region LogInformation
+
+        /// <summary>
+        ///     Write to the logger
+        ///     To handle event from other treads we need dispatching.
+        /// </summary>
+        /// <param name="message"></param>
+        private void WriteEventHandler(string message)
+        {
+            LogOutput.Dispatcher.BeginInvoke(new Action(() => LogOutput.AppendText(message)));
+        }
+
+        /// <summary>
+        ///     Text change event for to show the most recent log
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LogOutput_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            LogOutput.ScrollToEnd();
+        }
+
+        #endregion LogInformation
 
         private void RunButton_Click(object sender, RoutedEventArgs e)
         {
@@ -82,11 +109,6 @@ namespace WebScraper
 
                 Console.WriteLine(rGroup.Extraction.Result);
             }
-        }
-
-        private void LogOutput_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            throw new NotImplementedException();
         }
 
         private void MenuFileExit_Click(object sender, RoutedEventArgs e)
