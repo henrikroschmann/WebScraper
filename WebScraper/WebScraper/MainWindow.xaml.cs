@@ -93,8 +93,8 @@ namespace WebScraper
                                 {From = "<td>", To = "</td>", GroupItemType = GroupItemType.Loop}
                         }
                     }
-                }).Select(exRule => new Scraper.Scraper(exRule)).Select(_a => _a.GetData()));
-                Console.WriteLine(rGroup.Extraction.Result);
+                }).Select(exRule => new Scraper.Scraper(exRule)).Select(x => x.GetData()));
+                Console.WriteLine();
             }
         }
 
