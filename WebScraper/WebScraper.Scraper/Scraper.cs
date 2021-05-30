@@ -54,6 +54,9 @@ namespace WebScraper.Scraper
                             switch (scraperGroup.Extraction.GroupItemType)
                             {
                                 case GroupItemType.Single:
+                                    var eSFrom = result.IndexOf(scraperGroup.Extraction.From, StringComparison.Ordinal) + scraperGroup.Extraction.From.Length;
+                                    var eSTo = result.Split(scraperGroup.Extraction.From)[1].IndexOf(scraperGroup.Extraction.To, StringComparison.Ordinal) + eFrom;
+                                    scraperGroup.Extraction?.Result.Add(result[eSFrom..eSTo]);
                                     break;
                                 case GroupItemType.Loop:
                                     var splitter = result.Split(scraperGroup.Extraction.From);
@@ -64,9 +67,9 @@ namespace WebScraper.Scraper
                                             continue;
                                         if (extractionSplit.LastIndexOf(scraperGroup.To, StringComparison.Ordinal) == -1)
                                             continue;
-                                        var eFrom = extractionSplit.IndexOf(scraperGroup.Extraction.From, StringComparison.Ordinal) + scraperGroup.Extraction.From.Length;
-                                        var eTo = extractionSplit.Split(scraperGroup.Extraction.From)[1].IndexOf(scraperGroup.Extraction.To, StringComparison.Ordinal) + eFrom;
-                                        scraperGroup.Extraction?.Result.Add(extractionSplit[eFrom..eTo]);
+                                        var eLFrom = extractionSplit.IndexOf(scraperGroup.Extraction.From, StringComparison.Ordinal) + scraperGroup.Extraction.From.Length;
+                                        var eLTo = extractionSplit.Split(scraperGroup.Extraction.From)[1].IndexOf(scraperGroup.Extraction.To, StringComparison.Ordinal) + eFrom;
+                                        scraperGroup.Extraction?.Result.Add(extractionSplit[eLFrom..eLTo]);
                                     }
                                     break;
                                 default:
