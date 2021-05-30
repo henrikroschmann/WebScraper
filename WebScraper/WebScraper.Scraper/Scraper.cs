@@ -22,6 +22,11 @@ namespace WebScraper.Scraper
             var stream = response.GetResponseStream();
             var reader = new StreamReader(stream);
             var html = reader.ReadToEnd();
+            if (html.IndexOf(_scraper.Scope.From, StringComparison.Ordinal) == -1)
+                return null;
+            if (html.LastIndexOf(_scraper.Scope.To, StringComparison.Ordinal) == -1)
+                return null;
+
             html = html[html.IndexOf(_scraper.Scope.From, StringComparison.Ordinal)..html.LastIndexOf(_scraper.Scope.To, StringComparison.Ordinal)];
 
             foreach (var scraperGroup in _scraper.Groups)
