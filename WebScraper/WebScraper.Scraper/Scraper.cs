@@ -62,7 +62,7 @@ namespace WebScraper.Scraper
                                     var splitter = result.Split(scraperGroup.Extraction.From);
                                     for (var j = 1; j < splitter.Length; j++)
                                     {
-                                        var extractionSplit = scraperGroup.Extraction.From + splitLines[j];
+                                        var extractionSplit = scraperGroup.Extraction.From + splitter[j];
                                         if (extractionSplit.IndexOf(scraperGroup.From, StringComparison.Ordinal) == -1)
                                             continue;
                                         if (extractionSplit.LastIndexOf(scraperGroup.To, StringComparison.Ordinal) == -1)
