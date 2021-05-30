@@ -55,7 +55,7 @@ namespace WebScraper.Scraper
                             {
                                 case GroupItemType.Single:
                                     var eSFrom = result.IndexOf(scraperGroup.Extraction.From, StringComparison.Ordinal) + scraperGroup.Extraction.From.Length;
-                                    var eSTo = result.Split(scraperGroup.Extraction.From)[1].IndexOf(scraperGroup.Extraction.To, StringComparison.Ordinal) + eFrom;
+                                    var eSTo = result.Split(scraperGroup.Extraction.From)[1].IndexOf(scraperGroup.Extraction.To, StringComparison.Ordinal) + eSFrom;
                                     scraperGroup.Extraction?.Result.Add(result[eSFrom..eSTo]);
                                     break;
                                 case GroupItemType.Loop:
@@ -68,7 +68,7 @@ namespace WebScraper.Scraper
                                         if (extractionSplit.LastIndexOf(scraperGroup.To, StringComparison.Ordinal) == -1)
                                             continue;
                                         var eLFrom = extractionSplit.IndexOf(scraperGroup.Extraction.From, StringComparison.Ordinal) + scraperGroup.Extraction.From.Length;
-                                        var eLTo = extractionSplit.Split(scraperGroup.Extraction.From)[1].IndexOf(scraperGroup.Extraction.To, StringComparison.Ordinal) + eFrom;
+                                        var eLTo = extractionSplit.Split(scraperGroup.Extraction.From)[1].IndexOf(scraperGroup.Extraction.To, StringComparison.Ordinal) + eLFrom;
                                         scraperGroup.Extraction?.Result.Add(extractionSplit[eLFrom..eLTo]);
                                     }
                                     break;
