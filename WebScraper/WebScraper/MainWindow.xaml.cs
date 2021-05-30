@@ -64,8 +64,8 @@ namespace WebScraper
                             GroupItemType = GroupItemType.Loop,
                             Extraction = new GroupItem()
                             {
-                                From = "href=\"",
-                                To = "\"",
+                                From = "<td>",
+                                To = "</td>",
                                 GroupItemType = GroupItemType.Loop
                             }
                         }
