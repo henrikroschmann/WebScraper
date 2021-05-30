@@ -14,7 +14,7 @@ namespace WebScraper.Scraper
             _scraper = scraper;
         }
 
-        public Models.Scraper Scrape()
+        public Models.Scraper GetData()
         {
             var request = (HttpWebRequest)WebRequest.Create(_scraper.Url);
             request.AutomaticDecompression = DecompressionMethods.GZip;
@@ -63,9 +63,9 @@ namespace WebScraper.Scraper
                                     for (var j = 1; j < splitter.Length; j++)
                                     {
                                         var extractionSplit = scraperGroup.Extraction.From + splitter[j];
-                                        if (extractionSplit.IndexOf(scraperGroup.From, StringComparison.Ordinal) == -1)
+                                        if (extractionSplit.IndexOf(scraperGroup.Extraction.From, StringComparison.Ordinal) == -1)
                                             continue;
-                                        if (extractionSplit.LastIndexOf(scraperGroup.To, StringComparison.Ordinal) == -1)
+                                        if (extractionSplit.LastIndexOf(scraperGroup.Extraction.To, StringComparison.Ordinal) == -1)
                                             continue;
                                         var eLFrom = extractionSplit.IndexOf(scraperGroup.Extraction.From, StringComparison.Ordinal) + scraperGroup.Extraction.From.Length;
                                         var eLTo = extractionSplit.Split(scraperGroup.Extraction.From)[1].IndexOf(scraperGroup.Extraction.To, StringComparison.Ordinal) + eLFrom;

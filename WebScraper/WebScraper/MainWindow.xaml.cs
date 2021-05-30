@@ -20,7 +20,11 @@ namespace WebScraper
 
         private void RunButton_Click(object sender, RoutedEventArgs e)
         {
-            var toScraper = new Scraper.Models.Scraper()
+
+            var output = new List<Scraper.Models.Scraper>();
+
+            // Get links from page 
+            var stockLinks = new Scraper.Scraper(new Scraper.Models.Scraper()
             {
                 Url = "https://epaccess.penser.se/",
                 Scope = new Scope()
@@ -42,12 +46,13 @@ namespace WebScraper
                         }
                     }
                 }
-            };
-            var a = new Scraper.Scraper(toScraper);
-            var result = a.Scrape();
-            foreach (var rGroup in result.Groups)
+            });
+            var resultStockLinks = stockLinks.GetData();
+
+            // Get elements from links in first result
+            foreach (var rGroup in resultStockLinks.Groups)
             {
-                foreach (var result2 in rGroup.Extraction.Result.Select(res => new Scraper.Models.Scraper()
+                foreach (var rule in rGroup.Extraction.Result.Select(res => new Scraper.Models.Scraper()
                 {
                     Url = res + "analys/",
                     Scope = new Scope()
@@ -57,7 +62,7 @@ namespace WebScraper
                     },
                     Groups = new List<GroupItem>()
                     {
-                        new GroupItem
+                        new()
                         {
                             From = "<tr class=\"report-row\"",
                             To = "</tr>",
@@ -70,9 +75,9 @@ namespace WebScraper
                             }
                         }
                     }
-                }).Select(anal => new Scraper.Scraper(anal)).Select(_a => _a.Scrape()))
+                }).Select(exRule => new Scraper.Scraper(exRule)).Select(_a => _a.GetData()))
                 {
-                    Console.WriteLine();
+                    output.Add(rule);
                 }
 
                 Console.WriteLine(rGroup.Extraction.Result);
