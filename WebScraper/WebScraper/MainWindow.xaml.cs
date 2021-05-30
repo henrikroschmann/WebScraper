@@ -41,6 +41,7 @@ namespace WebScraper
         private void LogOutput_TextChanged(object sender, TextChangedEventArgs e)
         {
             LogOutput.ScrollToEnd();
+            LogOutput.UpdateLayout();
         }
 
         #endregion LogInformation
@@ -79,34 +80,20 @@ namespace WebScraper
             // Get elements from links in first result
             foreach (var rGroup in resultStockLinks.Groups)
             {
-                foreach (var rule in rGroup.Extraction.Result.Select(res => new Scraper.Models.Scraper()
+                output.AddRange(rGroup.Extraction.Result.Select(res => new Scraper.Models.Scraper()
                 {
                     Url = res + "analys/",
-                    Scope = new Scope()
-                    {
-                        From = "<table class=\"reports-list\">",
-                        To = "</table"
-                    },
+                    Scope = new Scope() {From = "<table class=\"reports-list\">", To = "</table"},
                     Groups = new List<GroupItem>()
                     {
                         new()
                         {
-                            From = "<tr class=\"report-row\"",
-                            To = "</tr>",
-                            GroupItemType = GroupItemType.Loop,
+                            From = "<tr class=\"report-row\"", To = "</tr>", GroupItemType = GroupItemType.Loop,
                             Extraction = new GroupItem()
-                            {
-                                From = "<td>",
-                                To = "</td>",
-                                GroupItemType = GroupItemType.Loop
-                            }
+                                {From = "<td>", To = "</td>", GroupItemType = GroupItemType.Loop}
                         }
                     }
-                }).Select(exRule => new Scraper.Scraper(exRule)).Select(_a => _a.GetData()))
-                {
-                    output.Add(rule);
-                }
-
+                }).Select(exRule => new Scraper.Scraper(exRule)).Select(_a => _a.GetData()));
                 Console.WriteLine(rGroup.Extraction.Result);
             }
         }
